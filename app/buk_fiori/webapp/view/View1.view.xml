@@ -1,0 +1,165 @@
+<mvc:View
+    controllerName="com.sap.bukfiori.controller.View1"
+    xmlns:mvc="sap.ui.core.mvc"
+    displayBlock="true"
+    xmlns="sap.ui.table"
+    xmlns:m="sap.m"
+    xmlns:u="sap.ui.unified"
+>
+    <m:Page
+        id="page"
+        title="Tree Table"
+    >
+        <m:content>
+            <!-- <Button text="Trigger" press="onPressTrigger"/> -->
+            <!-- <DatePicker
+                id="startDate"
+                value="{path:'oDateModel>/dateValue',formatter:'.date', type:'sap.ui.model.type.Date', formatOptions:{strictParsing:true},constraints:{displayFormat:'Date'}}"
+                change="handleChange"
+                class="sapUiSmallMarginBottom"
+            /> -->
+            <m:HBox>
+                <m:Button
+                    text="Add"
+                    press="onAddNewRow"
+                />
+                <m:Button
+                    text="Edit"
+                    press="onEditRow"
+                />
+                <m:Button
+                    text="Delete"
+                    press="onDeleteRow"
+                />
+                <m:Button
+                    text="Download Template"
+                    press="onDownloadTemplate"
+                />
+
+                <u:FileUploader
+                    id="FileUploaderId"
+                    sameFilenameAllowed="true"
+                    iconOnly="false"
+                    buttonOnly="true"
+                    fileType="XLSX,xlsx"
+                    icon="sap-icon://upload"
+                    iconFirst="true"
+                    style="Emphasized"
+                    change="onUpload"
+                />
+            </m:HBox>
+            <TreeTable
+                id="treeTable"
+                selectionMode="Single"
+                enableColumnReordering="false"
+                expandFirstLevel="false"
+                rows="{
+            path : '/Materials',
+            parameters : {
+                countMode: 'Inline',
+                treeAnnotationProperties : {
+                    hierarchyLevelFor : 'HierarchyLevel',
+                    hierarchyNodeFor : 'NodeID',
+                    hierarchyParentNodeFor : 'ParentNodeID',
+                    hierarchyDrillStateFor : 'DrillState'
+                }
+            }
+        }"
+            >
+                <columns>
+                    <Column label="HierarchyLevel">
+                        <template>
+                            <m:Text
+                                text="{HierarchyLevel}"
+                                wrapping="false"
+                            />
+                        </template>
+                    </Column>
+
+                    <Column label="NodeID">
+                        <template>
+                            <m:Text
+                                text="{NodeID}"
+                                wrapping="false"
+                            />
+                        </template>
+                    </Column>
+
+                    <Column label="ParentNodeID">
+                        <template>
+                            <m:Text
+                                text="{ParentNodeID}"
+                                wrapping="false"
+                            />
+                        </template>
+                    </Column>
+                    <Column label="MaterialGroup">
+                        <template>
+                            <m:Text
+                                text="{MaterialGroup}"
+                                wrapping="false"
+                            />
+                        </template>
+                    </Column>
+                    <Column label="MaterialNumber">
+                        <template>
+                            <m:Text
+                                text="{MaterialNumber}"
+                                wrapping="false"
+                            />
+                        </template>
+                    </Column>
+
+                    <Column label="MaterialDesc">
+                        <template>
+                            <m:Text
+                                text="{MaterialDesc}"
+                                wrapping="false"
+                            />
+                        </template>
+                    </Column>
+                    <Column label="Quantity">
+                        <template>
+                            <m:Text
+                                text="{Quantity}"
+                                wrapping="false"
+                            />
+                        </template>
+                    </Column>
+                     <Column label="UnitOfMeasure">
+                        <template>
+                            <m:Text
+                                text="{UnitOfMeasure}"
+                                wrapping="false"
+                            />
+                        </template>
+                    </Column>
+                     <Column label="UnitPrice">
+                        <template>
+                            <m:Text
+                                text="{UnitPrice}"
+                                wrapping="false"
+                            />
+                        </template>
+                    </Column>
+                    <Column label="Currency">
+                        <template>
+                            <m:Text
+                                text="{Currency}"
+                                wrapping="false"
+                            />
+                        </template>
+                    </Column>
+                     <Column label="Total">
+                        <template>
+                            <m:Text
+                                text="{Total}"
+                                wrapping="false"
+                            />
+                        </template>
+                    </Column>
+                </columns>
+            </TreeTable>
+        </m:content>
+    </m:Page>
+</mvc:View>

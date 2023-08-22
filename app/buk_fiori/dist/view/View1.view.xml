@@ -1,0 +1,97 @@
+<mvc:View
+    controllerName="com.sap.bukfiori.controller.View1"
+    xmlns:mvc="sap.ui.core.mvc"
+    displayBlock="true"
+    xmlns="sap.ui.table"
+    xmlns:m="sap.m"
+    xmlns:spreadsheet="cc.spreadsheetimporter.button.v0_10_3"
+>
+    <m:Page
+        id="page"
+        title="{i18n>title}"
+    >
+        <m:content>
+            <!-- <Button text="Trigger" press="onPressTrigger"/> -->
+            <!-- <DatePicker
+                id="startDate"
+                value="{path:'oDateModel>/dateValue',formatter:'.date', type:'sap.ui.model.type.Date', formatOptions:{strictParsing:true},constraints:{displayFormat:'Date'}}"
+                change="handleChange"
+                class="sapUiSmallMarginBottom"
+            /> -->
+            <m:Button
+                text="Add"
+                press="onAddNewRow"
+            />
+            <m:Button
+                text="Edit"
+                press="onEditRow"
+            />
+            <m:Button
+                text="Delete"
+                press="onDeleteRow"
+            />
+            <m:Button
+                text="Upload"
+                press="onUploadExcel"
+            />
+           <spreadsheet:SpreadsheetUpload id="spreadsheetUploadButton" text="Spreadsheet Upload Button" 
+tableId="container-todo---detail--lineItemsList"/>
+            <TreeTable
+                id="treeTable"
+                selectionMode="Single"
+                enableColumnReordering="false"
+                expandFirstLevel="false"
+                rows="{
+            path : '/Materials',
+            parameters : {
+                countMode: 'Inline',
+                treeAnnotationProperties : {
+                    hierarchyLevelFor : 'HierarchyLevel',
+                    hierarchyNodeFor : 'NodeID',
+                    hierarchyParentNodeFor : 'ParentNodeID',
+                    hierarchyDrillStateFor : 'DrillState'
+                }
+            }
+        }"
+            >
+                <columns>
+                    <Column label="Description">
+                        <template>
+                            <m:Text
+                                text="{MaterialDesc}"
+                                wrapping="false"
+                            />
+                        </template>
+                    </Column>
+
+                    <Column label="HierarchyLevel">
+                        <template>
+                            <m:Text
+                                text="{HierarchyLevel}"
+                                wrapping="false"
+                            />
+                        </template>
+                    </Column>
+
+                    <Column label="NodeID">
+                        <template>
+                            <m:Text
+                                text="{NodeID}"
+                                wrapping="false"
+                            />
+                        </template>
+                    </Column>
+
+                    <Column label="ParentNodeID">
+                        <template>
+                            <m:Text
+                                text="{ParentNodeID}"
+                                wrapping="false"
+                            />
+                        </template>
+                    </Column>
+                </columns>
+            </TreeTable>
+        </m:content>
+    </m:Page>
+</mvc:View>

@@ -1,0 +1,51 @@
+{
+  "name": "wf_trigger",
+  "version": "1.0.0",
+  "description": "A simple CAP project.",
+  "repository": "<Add your repository here>",
+  "license": "UNLICENSED",
+  "private": true,
+  "dependencies": {
+    "@sap-cloud-sdk/connectivity": "^3.4.0",
+    "@sap/cds": "^7",
+    "@sap/cds-hana": "^2",
+    "@sap/cds-odata-v2-adapter-proxy": "^1.9.21",
+    "@sap/cloud-sdk-workflow-service-cf": "^2.1.0",
+    "@sap/hana-client": "^2.17.22",
+    "@sap/xsenv": "^3.4.0",
+    "@sap/xssec": "^3.3.2",
+    "axios": "^1.4.0",
+    "cfenv": "^1.2.4",
+    "express": "^4",
+    "hdb": "^0.19.5",
+    "passport": "^0.6.0"
+  },
+  "devDependencies": {
+    "@cap-js/sqlite": "^1",
+    "@sap/cds-dk": "^7",
+    "@sap/hdi-deploy": "4.8.0",
+    "@sap/ux-specification": "^1.108.11",
+    "rimraf": "^3.0.2"
+  },
+  "scripts": {
+    "start": "cds-serve",
+    "watch-buk_fiori": "cds watch --open buk_fiori/webapp/index.html?sap-ui-xx-viewCache=false",
+    "undeploy": "cf undeploy wf_trigger --delete-services --delete-service-keys --delete-service-brokers",
+    "build": "rimraf resources mta_archives && mbt build --mtar archive",
+    "deploy": "cf deploy mta_archives/archive.mtar --retries 1"
+  },
+  "cds": {
+    "requires": {
+      "db": "hana-cloud",
+      "uaa": {
+        "kind": "xsuaa"
+      }
+    },
+    "hana": {
+      "deploy-format": "hdbtable"
+    },
+    "features": {
+      "kibana_formatter": true
+    }
+  }
+}

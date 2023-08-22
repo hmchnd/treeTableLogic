@@ -1,0 +1,29 @@
+<core:FragmentDefinition
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+>
+    <Dialog showHeader="false">
+        <Toolbar>
+            <Title
+                text="Add New Entry"
+                titleStyle="H4"
+                class="sapUiMediumMarginBegin sapUiSizeCompact"
+            />
+        </Toolbar>
+
+        <buttons class="sapUiSizeCompact">
+            <Button
+                text="Save"
+                class="sapUiSizeCompact"
+                press="onAddDiaglogSave"
+                type="Transparent"
+            />
+             <Button
+                text="Cancel"
+                class="sapUiSizeCompact"
+                press="onAddDiaglogCancel"
+                type="Transparent"
+            />
+        </buttons>
+    </Dialog>
+</core:FragmentDefinition>

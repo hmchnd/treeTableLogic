@@ -15,7 +15,24 @@ sap.ui.define([
 
                 this.getView().setModel(oDateModel, "oDateModel");
                 let oTreeModel = new sap.ui.model.json.JSONModel();
+                oTreeModel.setData({
+                    "settings":{
+                        "edit":false
+                    },
+                    "items":[
+                        {
+                            MaterialNumber: "",
+                            MaterialGroup: "",
+                            MaterialDesc: "",
+                            UnitOfMeasure: "",
+                            UnitPrice: "",
+                            Currency: "",
+                            Quantity: ""
+                        }
+                    ]
+                });
                 this.getView().setModel(oTreeModel, "oTreeModel");
+                oTreeModel.refresh(true);
 
 
 
@@ -56,11 +73,20 @@ sap.ui.define([
                 let oTreeTable = this.byId("treeTable");
                 this.onLoadDialog().open();
                 if (oTreeTable.getSelectedIndices().length > 0) {
+                    this.getView().getModel("oTreeModel").setProperty("/settings/edit/",true);
+                    this.onLoadDialog().setTitle("Add New Child Node");
+
+
                     // open child info
                 } else {
+                    this.getView().getModel("oTreeModel").setProperty("/settings/edit/",false);
+                    this.onLoadDialog().setTitle("Add New Parent Node");
                     // open parent info
 
                 }
+                this.getView().getModel("oTreeModel").refresh(true);
+               
+              
                 // oModel.callFunction("/getNewNodeID", {
                 //     urlParameters: { matGroup: "" },
                 //     success: function (e) {
@@ -76,12 +102,40 @@ sap.ui.define([
                 // );
 
             },
+            onAddDialogAddButtonPress:function(){
+                let oTreeModel =this.getView().getModel("oTreeModel");
+                let oTreeData = oTreeModel.getData().items;
+                oTreeData.push(
+                    {
+                        MaterialNumber: "",
+                        MaterialGroup: "",
+                        MaterialDesc: "",
+                        UnitOfMeasure: "",
+                        UnitPrice: "",
+                        Currency: "",
+                        Quantity: ""
+                    }
+                )
+                oTreeModel.setProperty("/items/",oTreeData);
+                oTreeModel.refresh(true);
+
+            },
+            onDelDialogItemPress:function(oEvent){
+                let oTreeModel =this.getView().getModel("oTreeModel");
+                var path = oEvent.getSource().getParent().getBindingContext("oTreeModel").getPath();
+                var index = path.charAt(path.length - 1);
+                let oTreeData = oTreeModel.getData().items;
+                oTreeData.splice(index, 1);
+                oTreeModel.setProperty("/items/",oTreeData);
+            },
             onEditRow: function () { },
             onAddDiaglogSave: function () {
            this.onLoadDialog().close();
             },
             onAddDiaglogCancel: function () {
                 this.onLoadDialog().close();
+                let oTreeModel =this.getView().getModel("oTreeModel");
+                oTreeModel.setProperty("/items/",[]);
             },
             onLoadDialog: function () {
                 if (!this.addDialog) {
@@ -217,10 +271,8 @@ sap.ui.define([
                             });
                         }
 
-                        // Setting the data to the local model 
-                        let oTreeModel = that.getView().getModel("oTreeModel");
-                        oTreeModel.setData(treeFormatedStructure);
-                        oTreeModel.refresh(true);
+                       
+                       
 
                     };
                     reader.onerror = function (ex) {

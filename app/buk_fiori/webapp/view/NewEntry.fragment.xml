@@ -9,7 +9,7 @@
 </HBox>
         <Panel>
 			<Table id="idAddTable" class="sapUiSizeCompact" mode="None" items="{oTreeModel>/items/}"
-				selectionChange="onAddNominationTableRowPress">
+				selectionChange="onAddNominationTableRowPress" rememberSelections="true">
 				<columns>
 					<Column>
 						<Text text="Material Group"/>

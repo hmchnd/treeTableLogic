@@ -75,6 +75,7 @@ sap.ui.define([
                 if (oTreeTable.getSelectedIndices().length > 0) {
                     this.getView().getModel("oTreeModel").setProperty("/settings/edit/", true);
                     this.onLoadDialog().setTitle("Add New Child Node");
+                    this.sMaterialGroupForNewChild = oTreeTable.getContextByIndex(oTreeTable.getSelectedIndices()[0]).getObject().MaterialGroup;
 
 
                     // open child info
@@ -93,11 +94,16 @@ sap.ui.define([
             },
             onAddDialogAddButtonPress: function () {
                 let oTreeModel = this.getView().getModel("oTreeModel");
+                let oTreeTable = this.byId("treeTable");
+                let matGroup="";
+                if (oTreeTable.getSelectedIndices().length > 0) {
+                    matGroup = this.sMaterialGroupForNewChild;
+                }
                 let oTreeData = oTreeModel.getData().items;
                 oTreeData.push(
                     {
                         MaterialNumber: "",
-                        MaterialGroup: "",
+                        MaterialGroup: matGroup,
                         MaterialDesc: "",
                         UnitOfMeasure: "",
                         UnitPrice: "",

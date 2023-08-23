@@ -21,15 +21,7 @@ sap.ui.define([
                         "edit": false
                     },
                     "items": [
-                        {
-                            MaterialNumber: "",
-                            MaterialGroup: "",
-                            MaterialDesc: "",
-                            UnitOfMeasure: "",
-                            UnitPrice: "",
-                            Currency: "",
-                            Quantity: ""
-                        }
+                       
                     ]
                 });
                 this.getView().setModel(oTreeModel, "oTreeModel");
@@ -76,6 +68,12 @@ sap.ui.define([
                     this.getView().getModel("oTreeModel").setProperty("/settings/edit/", true);
                     this.onLoadDialog().setTitle("Add New Child Node");
                     this.sMaterialGroupForNewChild = oTreeTable.getContextByIndex(oTreeTable.getSelectedIndices()[0]).getObject().MaterialGroup;
+                    this.ParentNodeForNewChild="";
+                    if(oTreeTable.getContextByIndex(oTreeTable.getSelectedIndices()[0]).getObject().ParentNodeID){
+                        this.ParentNodeForNewChild = oTreeTable.getContextByIndex(oTreeTable.getSelectedIndices()[0]).getObject().ParentNodeID;
+                    }else{
+                        this.ParentNodeForNewChild = oTreeTable.getContextByIndex(oTreeTable.getSelectedIndices()[0]).getObject().NodeID; 
+                    }
 
 
                     // open child info
@@ -179,9 +177,9 @@ sap.ui.define([
                     bisParentData = true;
 
                 };
-
+                aPayload = this.getView().getModel("oTreeModel").getData().items;
                 if (bisParentData) {
-                    aPayload = this.getView().getModel("oTreeModel").getData().items;
+                   
                     for (let indexI = 0; indexI < aPayload.length; indexI++) {
                         debugger;
                         NewNodeID = await this.getNewNodeID();
@@ -207,6 +205,26 @@ sap.ui.define([
 
                     }
 
+                }else{
+                    NewNodeID = await this.getNewNodeID();
+                    NewNodeID = NewNodeID.getNewNodeID;
+                    for (let indexI = 0; indexI < aPayload.length; indexI++) {
+                    let oNewChild = {
+                        NodeID: NewNodeID,
+                        ParentNodeID:  this.ParentNodeForNewChild,
+                        DrillState: "leaf",
+                        HierarchyLevel: "1",
+                        MaterialNumber: aPayload[indexI].MaterialNumber,
+                        MaterialGroup: aPayload[indexI].MaterialGroup,
+                        MaterialDesc: aPayload[indexI].MaterialDesc,
+                        UnitOfMeasure: aPayload[indexI].UnitOfMeasure,
+                        UnitPrice: parseFloat(aPayload[indexI].UnitPrice),
+                        Currency: aPayload[indexI].Currency,
+                        Quantity: aPayload[indexI].Quantity.toString(),
+                        Total: 0.00
+                    }
+                    let oCreateResponse = await this.createNewEntry(oNewChild);
+                }
                 }
 
 

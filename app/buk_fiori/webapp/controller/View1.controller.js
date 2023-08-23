@@ -1,10 +1,11 @@
 sap.ui.define([
-    "sap/ui/core/mvc/Controller"
+    "sap/ui/core/mvc/Controller",
+    "sap/m/MessageBox"
 ],
     /**
      * @param {typeof sap.ui.core.mvc.Controller} Controller
      */
-    function (Controller) {
+    function (Controller,MessageBox) {
         "use strict";
 
         return Controller.extend("com.sap.bukfiori.controller.View1", {
@@ -16,10 +17,10 @@ sap.ui.define([
                 this.getView().setModel(oDateModel, "oDateModel");
                 let oTreeModel = new sap.ui.model.json.JSONModel();
                 oTreeModel.setData({
-                    "settings":{
-                        "edit":false
+                    "settings": {
+                        "edit": false
                     },
-                    "items":[
+                    "items": [
                         {
                             MaterialNumber: "",
                             MaterialGroup: "",
@@ -68,42 +69,30 @@ sap.ui.define([
                 debugger
             },
             onAddNewRow: function () {
-                let oModel = this.getOwnerComponent().getModel();
-                let NewNodeID;
+             
                 let oTreeTable = this.byId("treeTable");
                 this.onLoadDialog().open();
                 if (oTreeTable.getSelectedIndices().length > 0) {
-                    this.getView().getModel("oTreeModel").setProperty("/settings/edit/",true);
+                    this.getView().getModel("oTreeModel").setProperty("/settings/edit/", true);
                     this.onLoadDialog().setTitle("Add New Child Node");
 
 
                     // open child info
                 } else {
-                    this.getView().getModel("oTreeModel").setProperty("/settings/edit/",false);
+                    this.getView().getModel("oTreeModel").setProperty("/settings/edit/", false);
                     this.onLoadDialog().setTitle("Add New Parent Node");
+
                     // open parent info
 
                 }
                 this.getView().getModel("oTreeModel").refresh(true);
-               
-              
-                // oModel.callFunction("/getNewNodeID", {
-                //     urlParameters: { matGroup: "" },
-                //     success: function (e) {
-                //         NewNodeID = e.getNewNodeID;
-                //         debugger
-                //     },
-                //     error: function (e) {
-                //         debugger
-                //     }
-                // }
 
 
-                // );
+
 
             },
-            onAddDialogAddButtonPress:function(){
-                let oTreeModel =this.getView().getModel("oTreeModel");
+            onAddDialogAddButtonPress: function () {
+                let oTreeModel = this.getView().getModel("oTreeModel");
                 let oTreeData = oTreeModel.getData().items;
                 oTreeData.push(
                     {
@@ -116,26 +105,111 @@ sap.ui.define([
                         Quantity: ""
                     }
                 )
-                oTreeModel.setProperty("/items/",oTreeData);
+                oTreeModel.setProperty("/items/", oTreeData);
                 oTreeModel.refresh(true);
 
             },
-            onDelDialogItemPress:function(oEvent){
-                let oTreeModel =this.getView().getModel("oTreeModel");
+            onDelDialogItemPress: function (oEvent) {
+                let oTreeModel = this.getView().getModel("oTreeModel");
                 var path = oEvent.getSource().getParent().getBindingContext("oTreeModel").getPath();
                 var index = path.charAt(path.length - 1);
                 let oTreeData = oTreeModel.getData().items;
                 oTreeData.splice(index, 1);
-                oTreeModel.setProperty("/items/",oTreeData);
+                oTreeModel.setProperty("/items/", oTreeData);
             },
             onEditRow: function () { },
-            onAddDiaglogSave: function () {
-           this.onLoadDialog().close();
+            getNewNodeID: function () {
+                let oModel = this.getOwnerComponent().getModel();
+
+                return new Promise(function(resolve,reject){
+                    oModel.callFunction("/getNewNodeID", {
+                        urlParameters: { matGroup: "" },
+                        success: function (oResponse) {
+                            //NewNodeID = e.getNewNodeID;
+                            resolve(oResponse)
+                            debugger
+                        },
+                        error: function (error) {
+                            reject(error);
+                            debugger
+                        }
+                    }
+    
+    
+                    );
+                })
+               
+                
+            },
+            createNewEntry:function(oPayload){
+                let oModel = this.getOwnerComponent().getModel();
+                let oView = this.getView();
+                oView.setBusy(true);
+                return new Promise(function(resolve,reject){
+                    oModel.create("/Materials", oPayload,{
+                       
+                        success: function (oResponse) {
+                            oView.setBusy(false);
+                            MessageBox.success("Created");
+                            resolve(oResponse);
+                            debugger
+                        },
+                        error: function (error) {
+                            oView.setBusy(false);
+                            reject(error);
+                            debugger
+                        }
+                    }
+    
+    
+                    );
+                });
+            },
+            onAddDiaglogSave: async function () {
+                let NewNodeID;
+                let bisParentData = false;
+                let aPayload;
+                if (this.getView().getModel("oTreeModel").getData().settings.edit === false) {
+                    bisParentData = true;
+
+                };
+
+                if (bisParentData) {
+                    aPayload = this.getView().getModel("oTreeModel").getData().items;
+                    for (let indexI = 0; indexI < aPayload.length; indexI++) {
+                        debugger;
+                        NewNodeID = await this.getNewNodeID();
+                        NewNodeID = NewNodeID.getNewNodeID;
+                        let oNewParent = {
+                            NodeID: NewNodeID,
+                            ParentNodeID: null,
+                            DrillState: "expanded",
+                            HierarchyLevel: "0",
+                            MaterialNumber: "",
+                            MaterialGroup: aPayload[indexI].MaterialGroup,
+                            MaterialDesc: "",
+                            UnitOfMeasure: "",
+                            UnitPrice: 0.00,
+                            Currency: "",
+                            Quantity: "",
+                            Total: 0.00
+                        };
+
+                        let oCreateResponse = await this.createNewEntry(oNewParent);
+
+
+
+                    }
+
+                }
+
+
+                this.onLoadDialog().close();
             },
             onAddDiaglogCancel: function () {
                 this.onLoadDialog().close();
-                let oTreeModel =this.getView().getModel("oTreeModel");
-                oTreeModel.setProperty("/items/",[]);
+                let oTreeModel = this.getView().getModel("oTreeModel");
+                oTreeModel.setProperty("/items/", []);
             },
             onLoadDialog: function () {
                 if (!this.addDialog) {
@@ -154,8 +228,7 @@ sap.ui.define([
                     UnitOfMeasure: "",
                     UnitPrice: 0.00,
                     Currency: "",
-                    Quantity: "",
-                    Total: 0.00
+                    Quantity: ""
                 }]
 
                 const worksheet = XLSX.utils.json_to_sheet(rows);
@@ -265,14 +338,14 @@ sap.ui.define([
                                 },
                                 error: function (oError) {
                                     that.getView().setBusy(false);
-                                    sap.m.MessageBox.error("Error while creating Tree record");
+                                    MessageBox.error("Error while creating Tree record");
 
                                 }
                             });
                         }
 
-                       
-                       
+
+
 
                     };
                     reader.onerror = function (ex) {

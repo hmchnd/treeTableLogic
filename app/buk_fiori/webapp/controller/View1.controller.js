@@ -188,7 +188,7 @@ sap.ui.define([
                             NodeID: NewNodeID,
                             ParentNodeID: null,
                             DrillState: "expanded",
-                            HierarchyLevel: "0",
+                            HierarchyLevel: 0,
                             MaterialNumber: "",
                             MaterialGroup: aPayload[indexI].MaterialGroup,
                             MaterialDesc: "",
@@ -213,7 +213,7 @@ sap.ui.define([
                         NodeID: NewNodeID,
                         ParentNodeID:  this.ParentNodeForNewChild,
                         DrillState: "leaf",
-                        HierarchyLevel: "1",
+                        HierarchyLevel: 1,
                         MaterialNumber: aPayload[indexI].MaterialNumber,
                         MaterialGroup: aPayload[indexI].MaterialGroup,
                         MaterialDesc: aPayload[indexI].MaterialDesc,
@@ -304,10 +304,10 @@ sap.ui.define([
                             counter = counter + 1;
 
                             let oNewParent = {
-                                NodeID: counter.toString(),
+                                NodeID: counter,
                                 ParentNodeID: null,
                                 DrillState: "expanded",
-                                HierarchyLevel: "0",
+                                HierarchyLevel: 0,
                                 MaterialNumber: "",
                                 MaterialGroup: groupKeys[indexI],
                                 MaterialDesc: "",
@@ -325,10 +325,10 @@ sap.ui.define([
                                 if (groupKeys[indexI] == excelData[indexJ].MaterialGroup) {
                                     counter = counter + 1;
                                     let oNewChild = {
-                                        NodeID: counter.toString(),
+                                        NodeID: counter,
                                         ParentNodeID: currentParentNode,
                                         DrillState: "leaf",
-                                        HierarchyLevel: "1",
+                                        HierarchyLevel: 1,
                                         MaterialNumber: excelData[indexJ].MaterialNumber,
                                         MaterialGroup: excelData[indexJ].MaterialGroup,
                                         MaterialDesc: excelData[indexJ].MaterialDesc,

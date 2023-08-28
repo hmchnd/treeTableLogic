@@ -52,17 +52,12 @@
                 id="treeTable"
                 selectionMode="Single"
                 enableColumnReordering="false"
-                expandFirstLevel="false"
+               
                 rows="{
             path : '/Materials',
             parameters : {
                 countMode: 'Inline',
-                treeAnnotationProperties : {
-                    hierarchyLevelFor : 'HierarchyLevel',
-                    hierarchyNodeFor : 'NodeID',
-                    hierarchyParentNodeFor : 'ParentNodeID',
-                    hierarchyDrillStateFor : 'DrillState'
-                }
+                numberOfExpandedLevels: 1
             }
         }"
             >

@@ -1,0 +1,71 @@
+<core:FragmentDefinition
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+>
+    <Dialog showHeader="true">
+       
+<HBox>
+<Button text="Add New Row" icon="sap-icon://add" press="onAddDialogAddButtonPress"/>
+</HBox>
+        <Panel>
+			<Table id="idAddTable" class="sapUiSizeCompact" mode="None" items="{oTreeModel>/items/}"
+				selectionChange="onAddNominationTableRowPress" rememberSelections="true">
+				<columns>
+					<Column>
+						<Text text="Material Group"/>
+					</Column>
+					<Column>
+						<Text text="Material Number"/>
+					</Column>
+                    <Column>
+						<Text text="Material Description"/>
+					</Column>
+					<Column>
+						<Text text="Quantity"/>
+					</Column>
+					<Column>
+						<Text text="Unit"/>
+					</Column>
+					<Column>
+						<Text text="Price"/>
+					</Column>
+					<Column >
+						<Text text="Currency"/>
+					</Column>
+                     <Column >
+						<Text text=""/>
+					</Column>
+				</columns>
+				<items>
+					<ColumnListItem>
+						<cells>
+							<Input value="{oTreeModel>MaterialGroup}" editable="{=${oTreeModel>/settings/edit}=== true ? false : true }"/>
+                            <Input value="{oTreeModel>MaterialNumber}" editable="{oTreeModel>/settings/edit}"/>
+                             <Input value="{oTreeModel>MaterialDesc}" editable="{oTreeModel>/settings/edit}"/>
+                            <Input value="{oTreeModel>Quantity}" editable="{oTreeModel>/settings/edit}"/>
+                            <Input value="{oTreeModel>UnitOfMeasure}" editable="{oTreeModel>/settings/edit}"/>
+                            <Input value="{oTreeModel>UnitPrice}" editable="{oTreeModel>/settings/edit}"/>
+                            <Input value="{oTreeModel>Currency}" editable="{oTreeModel>/settings/edit}"/>
+                            <Button icon="sap-icon://delete"  press="onDelDialogItemPress"/>
+						</cells>
+					</ColumnListItem>
+				</items>
+			</Table>
+	</Panel>
+
+        <buttons class="sapUiSizeCompact">
+            <Button
+                text="Save"
+                class="sapUiSizeCompact"
+                press="onAddDiaglogSave"
+                type="Transparent"
+            />
+             <Button
+                text="Cancel"
+                class="sapUiSizeCompact"
+                press="onAddDiaglogCancel"
+                type="Transparent"
+            />
+        </buttons>
+    </Dialog>
+</core:FragmentDefinition>

@@ -4,11 +4,11 @@
     displayBlock="true"
     xmlns="sap.ui.table"
     xmlns:m="sap.m"
-    xmlns:spreadsheet="cc.spreadsheetimporter.button.v0_10_3"
+    xmlns:u="sap.ui.unified"
 >
     <m:Page
         id="page"
-        title="{i18n>title}"
+        title="Tree Table"
     >
         <m:content>
             <!-- <Button text="Trigger" press="onPressTrigger"/> -->
@@ -18,24 +18,36 @@
                 change="handleChange"
                 class="sapUiSmallMarginBottom"
             /> -->
-            <m:Button
-                text="Add"
-                press="onAddNewRow"
-            />
-            <m:Button
-                text="Edit"
-                press="onEditRow"
-            />
-            <m:Button
-                text="Delete"
-                press="onDeleteRow"
-            />
-            <m:Button
-                text="Upload"
-                press="onUploadExcel"
-            />
-           <spreadsheet:SpreadsheetUpload id="spreadsheetUploadButton" text="Spreadsheet Upload Button" 
-tableId="container-todo---detail--lineItemsList"/>
+            <m:HBox>
+                <m:Button
+                    text="Add"
+                    press="onAddNewRow"
+                />
+                <m:Button
+                    text="Edit"
+                    press="onEditRow"
+                />
+                <m:Button
+                    text="Delete"
+                    press="onDeleteRow"
+                />
+                <m:Button
+                    text="Download Template"
+                    press="onDownloadTemplate"
+                />
+
+                <u:FileUploader
+                    id="FileUploaderId"
+                    sameFilenameAllowed="true"
+                    iconOnly="false"
+                    buttonOnly="true"
+                    fileType="XLSX,xlsx"
+                    icon="sap-icon://upload"
+                    iconFirst="true"
+                    style="Emphasized"
+                    change="onUpload"
+                />
+            </m:HBox>
             <TreeTable
                 id="treeTable"
                 selectionMode="Single"
@@ -55,15 +67,6 @@ tableId="container-todo---detail--lineItemsList"/>
         }"
             >
                 <columns>
-                    <Column label="Description">
-                        <template>
-                            <m:Text
-                                text="{MaterialDesc}"
-                                wrapping="false"
-                            />
-                        </template>
-                    </Column>
-
                     <Column label="HierarchyLevel">
                         <template>
                             <m:Text
@@ -86,6 +89,71 @@ tableId="container-todo---detail--lineItemsList"/>
                         <template>
                             <m:Text
                                 text="{ParentNodeID}"
+                                wrapping="false"
+                            />
+                        </template>
+                    </Column>
+                    <Column label="MaterialGroup">
+                        <template>
+                            <m:Text
+                                text="{MaterialGroup}"
+                                wrapping="false"
+                            />
+                        </template>
+                    </Column>
+                    <Column label="MaterialNumber">
+                        <template>
+                            <m:Text
+                                text="{MaterialNumber}"
+                                wrapping="false"
+                            />
+                        </template>
+                    </Column>
+
+                    <Column label="MaterialDesc">
+                        <template>
+                            <m:Text
+                                text="{MaterialDesc}"
+                                wrapping="false"
+                            />
+                        </template>
+                    </Column>
+                    <Column label="Quantity">
+                        <template>
+                            <m:Text
+                                text="{Quantity}"
+                                wrapping="false"
+                            />
+                        </template>
+                    </Column>
+                     <Column label="UnitOfMeasure">
+                        <template>
+                            <m:Text
+                                text="{UnitOfMeasure}"
+                                wrapping="false"
+                            />
+                        </template>
+                    </Column>
+                     <Column label="UnitPrice">
+                        <template>
+                            <m:Text
+                                text="{UnitPrice}"
+                                wrapping="false"
+                            />
+                        </template>
+                    </Column>
+                    <Column label="Currency">
+                        <template>
+                            <m:Text
+                                text="{Currency}"
+                                wrapping="false"
+                            />
+                        </template>
+                    </Column>
+                     <Column label="Total">
+                        <template>
+                            <m:Text
+                                text="{Total}"
                                 wrapping="false"
                             />
                         </template>

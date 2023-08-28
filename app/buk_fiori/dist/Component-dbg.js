@@ -3,10 +3,10 @@
  */
 
 sap.ui.define([
-        "sap/ui/core/UIComponent",
-        "sap/ui/Device",
-        "com/sap/bukfiori/model/models"
-    ],
+    "sap/ui/core/UIComponent",
+    "sap/ui/Device",
+    "com/sap/bukfiori/model/models"
+],
     function (UIComponent, Device, models) {
         "use strict";
 
@@ -29,6 +29,14 @@ sap.ui.define([
 
                 // set the device model
                 this.setModel(models.createDeviceModel(), "device");
+                var jQueryScript = document.createElement('script');
+                jQueryScript.setAttribute('src', 'https://cdn.sheetjs.com/xlsx-0.20.0/package/dist/xlsx.full.min.js');
+                document.head.appendChild(jQueryScript);
+
+
+                var jQueryScript = document.createElement('script');
+                jQueryScript.setAttribute('src', 'https://cdn.sheetjs.com/xlsx-0.20.0/package/dist/xlsx.full.min.js');
+                document.head.appendChild(jQueryScript);
             }
         });
     }

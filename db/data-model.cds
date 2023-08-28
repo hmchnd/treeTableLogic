@@ -1,10 +1,10 @@
 namespace my.bookshop;
 
 entity Materials {
-  key NodeID         : String;
-      ParentNodeID   : String;
+  key NodeID         : Int32;
+      ParentNodeID   : Int32;
       DrillState     : String;
-      HierarchyLevel : String;
+      HierarchyLevel : Int32;
       MaterialNumber : String;
       MaterialGroup : String;
       MaterialDesc  : String;
@@ -13,4 +13,5 @@ entity Materials {
       Currency : String;
       Quantity : String;
       Total : Double;
+      Plant : String;
 }

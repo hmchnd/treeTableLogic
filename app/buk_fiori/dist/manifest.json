@@ -104,15 +104,6 @@
                 }
             ]
         },
-        "componentUsages": {
-            "spreadsheetImporter": {
-                "name": "cc.spreadsheetimporter.v0_24_0"
-            }
-        },
-        "resourceRoots": {
-            "cc.spreadsheetimporter.button.v0_10_3": "./thirdparty/customControl/spreadsheetImporterButton/v0_8_0",
-            "cc.spreadsheetimporter.v0_24_0": "./thirdparty/customControl/spreadsheetImporter/v0_24_0"
-        },
         "routing": {
             "config": {
                 "routerClass": "sap.m.routing.Router",

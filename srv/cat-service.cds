@@ -5,3 +5,4 @@ service CatalogService {
     function getNewNodeID(matGroup:String) returns String;
  
 }
+

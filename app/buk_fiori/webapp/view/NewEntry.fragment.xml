@@ -39,14 +39,14 @@
 				<items>
 					<ColumnListItem>
 						<cells>
-							<Input value="{oTreeModel>MaterialGroup}" editable="{=${oTreeModel>/settings/edit}=== true ? false : true }"/>
-                            <Input value="{oTreeModel>MaterialNumber}" editable="{oTreeModel>/settings/edit}"/>
-                             <Input value="{oTreeModel>MaterialDesc}" editable="{oTreeModel>/settings/edit}"/>
-                            <Input value="{oTreeModel>Quantity}" editable="{oTreeModel>/settings/edit}"/>
-                            <Input value="{oTreeModel>UnitOfMeasure}" editable="{oTreeModel>/settings/edit}"/>
-                            <Input value="{oTreeModel>UnitPrice}" editable="{oTreeModel>/settings/edit}"/>
-                            <Input value="{oTreeModel>Currency}" editable="{oTreeModel>/settings/edit}"/>
-                            <Button icon="sap-icon://delete"  press="onDelDialogItemPress"/>
+							<Input value="{oTreeModel>MaterialGroup}" />
+                            <Input value="{oTreeModel>MaterialNumber}" />
+                             <Input value="{oTreeModel>MaterialDesc}" />
+                            <Input value="{oTreeModel>Quantity}" />
+                            <Input value="{oTreeModel>UnitOfMeasure}" />
+                            <Input value="{oTreeModel>UnitPrice}" />
+                            <Input value="{oTreeModel>Currency}" />
+                            <Button icon="sap-icon://delete"  />
 						</cells>
 					</ColumnListItem>
 				</items>

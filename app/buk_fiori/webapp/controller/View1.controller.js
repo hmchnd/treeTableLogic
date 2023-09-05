@@ -5,7 +5,7 @@ sap.ui.define([
     /**
      * @param {typeof sap.ui.core.mvc.Controller} Controller
      */
-    function (Controller,MessageBox) {
+    function (Controller, MessageBox) {
         "use strict";
 
         return Controller.extend("com.sap.bukfiori.controller.View1", {
@@ -21,11 +21,13 @@ sap.ui.define([
                         "edit": false
                     },
                     "items": [
-                       
+
                     ]
                 });
                 this.getView().setModel(oTreeModel, "oTreeModel");
                 oTreeModel.refresh(true);
+                this.ParentNodeForNew = null;
+                this.HierarchyLevelForNew=-1;
 
 
 
@@ -61,19 +63,22 @@ sap.ui.define([
                 debugger
             },
             onAddNewRow: function () {
-             
+
                 let oTreeTable = this.byId("treeTable");
+                this.ParentNodeForNew = null;
+                this.HierarchyLevelForNew=-1;
                 this.onLoadDialog().open();
                 if (oTreeTable.getSelectedIndices().length > 0) {
-                    this.getView().getModel("oTreeModel").setProperty("/settings/edit/", true);
+                 //   this.getView().getModel("oTreeModel").setProperty("/settings/edit/", true);
                     this.onLoadDialog().setTitle("Add New Child Node");
-                    this.sMaterialGroupForNewChild = oTreeTable.getContextByIndex(oTreeTable.getSelectedIndices()[0]).getObject().MaterialGroup;
-                    this.ParentNodeForNewChild="";
-                    if(oTreeTable.getContextByIndex(oTreeTable.getSelectedIndices()[0]).getObject().ParentNodeID){
-                        this.ParentNodeForNewChild = oTreeTable.getContextByIndex(oTreeTable.getSelectedIndices()[0]).getObject().ParentNodeID;
-                    }else{
-                        this.ParentNodeForNewChild = oTreeTable.getContextByIndex(oTreeTable.getSelectedIndices()[0]).getObject().NodeID; 
-                    }
+                    this.HierarchyLevelForNew = oTreeTable.getContextByIndex(oTreeTable.getSelectedIndices()[0]).getObject().HierarchyLevel;
+                    this.ParentNodeForNew = oTreeTable.getContextByIndex(oTreeTable.getSelectedIndices()[0]).getObject().NodeID;
+
+                    // if (oTreeTable.getContextByIndex(oTreeTable.getSelectedIndices()[0]).getObject().ParentNodeID) {
+                    //     this.ParentNodeForNew = oTreeTable.getContextByIndex(oTreeTable.getSelectedIndices()[0]).getObject().ParentNodeID;
+                    // } else {
+                       
+                    // }
 
 
                     // open child info
@@ -93,7 +98,7 @@ sap.ui.define([
             onAddDialogAddButtonPress: function () {
                 let oTreeModel = this.getView().getModel("oTreeModel");
                 let oTreeTable = this.byId("treeTable");
-                let matGroup="";
+                let matGroup = "";
                 if (oTreeTable.getSelectedIndices().length > 0) {
                     matGroup = this.sMaterialGroupForNewChild;
                 }
@@ -125,7 +130,7 @@ sap.ui.define([
             getNewNodeID: function () {
                 let oModel = this.getOwnerComponent().getModel();
 
-                return new Promise(function(resolve,reject){
+                return new Promise(function (resolve, reject) {
                     oModel.callFunction("/getNewNodeID", {
                         urlParameters: { matGroup: "" },
                         success: function (oResponse) {
@@ -138,20 +143,20 @@ sap.ui.define([
                             debugger
                         }
                     }
-    
-    
+
+
                     );
                 })
-               
-                
+
+
             },
-            createNewEntry:function(oPayload){
+            createNewEntry: function (oPayload) {
                 let oModel = this.getOwnerComponent().getModel();
                 let oView = this.getView();
                 oView.setBusy(true);
-                return new Promise(function(resolve,reject){
-                    oModel.create("/Materials", oPayload,{
-                       
+                return new Promise(function (resolve, reject) {
+                    oModel.create("/Materials", oPayload, {
+
                         success: function (oResponse) {
                             oView.setBusy(false);
                             MessageBox.success("Created");
@@ -164,8 +169,8 @@ sap.ui.define([
                             debugger
                         }
                     }
-    
-    
+
+
                     );
                 });
             },
@@ -173,47 +178,22 @@ sap.ui.define([
                 let NewNodeID;
                 let bisParentData = false;
                 let aPayload;
-                if (this.getView().getModel("oTreeModel").getData().settings.edit === false) {
-                    bisParentData = true;
+                // if (this.getView().getModel("oTreeModel").getData().settings.edit === false) {
+                //     bisParentData = true;
 
-                };
+                // };
                 aPayload = this.getView().getModel("oTreeModel").getData().items;
-                if (bisParentData) {
-                   
-                    for (let indexI = 0; indexI < aPayload.length; indexI++) {
-                        debugger;
-                        NewNodeID = await this.getNewNodeID();
-                        NewNodeID = NewNodeID.getNewNodeID;
-                        let oNewParent = {
-                            NodeID: NewNodeID,
-                            ParentNodeID: null,
-                            DrillState: "expanded",
-                            HierarchyLevel: 0,
-                            MaterialNumber: "",
-                            MaterialGroup: aPayload[indexI].MaterialGroup,
-                            MaterialDesc: "",
-                            UnitOfMeasure: "",
-                            UnitPrice: 0.00,
-                            Currency: "",
-                            Quantity: "",
-                            Total: 0.00
-                        };
 
-                        let oCreateResponse = await this.createNewEntry(oNewParent);
-
-
-
-                    }
-
-                }else{
+               
+                for (let indexI = 0; indexI < aPayload.length; indexI++) {
                     NewNodeID = await this.getNewNodeID();
                     NewNodeID = NewNodeID.getNewNodeID;
-                    for (let indexI = 0; indexI < aPayload.length; indexI++) {
-                    let oNewChild = {
-                        NodeID: NewNodeID,
-                        ParentNodeID:  this.ParentNodeForNewChild,
-                        DrillState: "leaf",
-                        HierarchyLevel: 1,
+                    
+                    let oNewEntry = {
+                        NodeID: Number(NewNodeID),
+                        ParentNodeID:  this.ParentNodeForNew,
+                        DrillState: "expanded",
+                        HierarchyLevel: this.getHierarchyLevel(),
                         MaterialNumber: aPayload[indexI].MaterialNumber,
                         MaterialGroup: aPayload[indexI].MaterialGroup,
                         MaterialDesc: aPayload[indexI].MaterialDesc,
@@ -223,12 +203,34 @@ sap.ui.define([
                         Quantity: aPayload[indexI].Quantity.toString(),
                         Total: 0.00
                     }
-                    let oCreateResponse = await this.createNewEntry(oNewChild);
+                    let oCreateResponse = await this.createNewEntry(oNewEntry);
                 }
-                }
+
 
 
                 this.onLoadDialog().close();
+            },
+            getParentNodeID: function (sValue) {
+                if(sValue=='null'  || !sValue){
+                    return null;
+                }else{
+                    return Number(sValue);
+
+                }
+
+
+
+
+            },
+            getHierarchyLevel: function () {
+
+                if(this.HierarchyLevelForNew==-1){
+                    return 0;
+                }else{
+                    return Number(this.HierarchyLevelForNew)+1;
+                }
+
+
             },
             onAddDiaglogCancel: function () {
                 this.onLoadDialog().close();
@@ -282,74 +284,56 @@ sap.ui.define([
 
                         });
 
-                        var groupedByMaterialGroup = excelData.reduce((group, arr) => {
+                        // var groupedByMaterialGroup = excelData.reduce((group, arr) => {
 
-                            const { MaterialGroup } = arr;
+                        //     const { MaterialGroup } = arr;
 
-                            group[MaterialGroup] = group[MaterialGroup] ?? [];
+                        //     group[MaterialGroup] = group[MaterialGroup] ?? [];
 
-                            group[MaterialGroup].push(arr);
+                        //     group[MaterialGroup].push(arr);
 
-                            return group;
+                        //     return group;
 
-                        },
+                        // },
 
-                            {});
+                        //     {});
 
-                        let groupKeys = Object.keys(groupedByMaterialGroup);
+                        // let groupKeys = Object.keys(groupedByMaterialGroup);
                         let treeFormatedStructure = [];
-                        let counter = 0;
+                        // let counter = 0;
 
-                        for (let indexI = 0; indexI < groupKeys.length; indexI++) {
-                            counter = counter + 1;
-
-                            let oNewParent = {
-                                NodeID: counter,
-                                ParentNodeID: null,
-                                DrillState: "expanded",
-                                HierarchyLevel: 0,
-                                MaterialNumber: "",
-                                MaterialGroup: groupKeys[indexI],
-                                MaterialDesc: "",
-                                UnitOfMeasure: "",
-                                UnitPrice: 0.00,
-                                Currency: "",
-                                Quantity: "",
-                                Total: 0.00
-                            }
-                            let currentParentNode = oNewParent.NodeID;
-                            treeFormatedStructure.push(oNewParent);
+                      
 
 
                             for (let indexJ = 0; indexJ < excelData.length; indexJ++) {
-                                if (groupKeys[indexI] == excelData[indexJ].MaterialGroup) {
-                                    counter = counter + 1;
+                               
+                                   
                                     let oNewChild = {
-                                        NodeID: counter,
-                                        ParentNodeID: currentParentNode,
-                                        DrillState: "leaf",
-                                        HierarchyLevel: 1,
-                                        MaterialNumber: excelData[indexJ].MaterialNumber,
-                                        MaterialGroup: excelData[indexJ].MaterialGroup,
-                                        MaterialDesc: excelData[indexJ].MaterialDesc,
-                                        UnitOfMeasure: excelData[indexJ].UnitOfMeasure,
-                                        UnitPrice: parseFloat(excelData[indexJ].UnitPrice),
-                                        Currency: excelData[indexJ].Currency,
-                                        Quantity: excelData[indexJ].Quantity.toString(),
+                                        NodeID: Number(excelData[indexJ].SN),
+                                        ParentNodeID: that.getParentNodeID(excelData[indexJ].PARENT),
+                                        DrillState: "expanded",
+                                        HierarchyLevel: Number(excelData[indexJ].LEVEL),
+                                        MaterialNumber: "",
+                                        MaterialGroup: "",
+                                        MaterialDesc: String(excelData[indexJ].MaterialDesc),
+                                        UnitOfMeasure: "",
+                                        UnitPrice: 0.00,
+                                        Currency: "",
+                                        Quantity: "",
                                         Total: 0.00
                                     }
                                     treeFormatedStructure.push(oNewChild);
-                                }
+                              
 
 
 
                             }
 
 
-                        }
+                     
 
                         let oDataModel = that.getOwnerComponent().getModel();
-                        //
+                       
                         that.getView().setBusy(true);
                         for (let indexK = 0; indexK < treeFormatedStructure.length; indexK++) {
                             oDataModel.create("/Materials", treeFormatedStructure[indexK], {
